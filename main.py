@@ -1,9 +1,16 @@
-import requests
 from prefect import flow
 
 @flow
-def call_api(url):
-    return requests.get(url).json()
+def common_flow(config: dict):
+    print("I am a subgraph that shows up in lots of places!")
+    intermediate_result = 42
+    return intermediate_result
 
-api_result = call_api("http://time.jsontest.com/")
-print(api_result)
+@flow
+def main_flow():
+    # do some things
+    # then call another flow function
+    data = common_flow(config={})
+    # do more things
+
+main_flow()
