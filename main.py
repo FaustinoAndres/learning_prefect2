@@ -1,8 +1,9 @@
+import requests
 from prefect import flow
 
 @flow
-def my_favorite_function():
-    print("What is your favorite number?")
-    return 42
+def call_api(url):
+    return requests.get(url).json()
 
-print(my_favorite_function())
+api_result = call_api("http://time.jsontest.com/")
+print(api_result)
