@@ -1,19 +1,15 @@
-import os
-from prefect import flow
+from prefect import flow, task
+from prefect.tasks import task_input_hash
+from datetime import timedelta
+
+@task(cache_key_fn=task_input_hash, cache_expiration=timedelta(minutes=1))
+def hello_task(name_input):
+    # Doing some work
+    print(f"Saying hello {name_input}")
+    return "hello " + name_input
 
 @flow
-def common_flow(config: dict):
-    print("I am a subgraph that shows up in lots of places!")
-    intermediate_result = 42
-    return intermediate_result
+def hello_flow(name_input):
+    hello_task(name_input)
 
-@flow(name="My Example Flow", 
-      description="An example flow for a tutorial.",
-      version=os.getenv("GIT_COMMIT_SHA"))
-def main_flow():
-    # do some things
-    # then call another flow function
-    data = common_flow(config={})
-    # do more things
-
-main_flow()
+hello_flow("Faustino")
